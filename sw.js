@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gun-exam-v6';
+const CACHE_NAME = 'gun-exam-v7';
 const ASSETS = [
   './',
   './index.html',
