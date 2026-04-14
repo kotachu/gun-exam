@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gun-exam-v3';
+const CACHE_NAME = 'gun-exam-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -18,13 +18,21 @@ self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
+// Network-first strategy: always try to fetch latest, fall back to cache only if offline
 self.addEventListener('fetch', (e) => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then((cached) => cached || fetch(e.request))
+    fetch(e.request)
+      .then((response) => {
+        // Update cache with fresh response
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
