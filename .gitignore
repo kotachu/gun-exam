@@ -1,0 +1,11 @@
+# Source images
+予想模試問題解答*.PNG
+
+# Intermediate data files
+set*.json
+all_questions.json
+questions_data.js
+
+# System
+.DS_Store
+.claude/
